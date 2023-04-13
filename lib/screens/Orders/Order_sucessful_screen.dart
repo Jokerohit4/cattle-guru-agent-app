@@ -16,7 +16,14 @@ class OrderSucessfulScreen extends StatefulWidget {
   final String orderval;
   final String date;
   final String earning;
-  const OrderSucessfulScreen({super.key, required this.name, required this.bags, required this.orderid, required this.orderval, required this.date, required this.earning});
+  const OrderSucessfulScreen(
+      {super.key,
+      required this.name,
+      required this.bags,
+      required this.orderid,
+      required this.orderval,
+      required this.date,
+      required this.earning});
 
   @override
   State<OrderSucessfulScreen> createState() => _OrderSucessfulScreenState();
@@ -24,6 +31,8 @@ class OrderSucessfulScreen extends StatefulWidget {
 
 class _OrderSucessfulScreenState extends State<OrderSucessfulScreen> {
   List<OrdersModel> productList = [];
+  
+
   Future<List<OrdersModel>> readData() async {
     print("sdjkfhldskfhd");
     await FirebaseFirestore.instance

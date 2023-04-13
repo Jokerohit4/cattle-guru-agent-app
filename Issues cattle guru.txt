@@ -1,0 +1,5 @@
+1) Resend OTP Not working
+2) Enter details First page checking conditions
+3) BackButton Not working in few pages
+4) Earnings Screen not working
+5) Payment type not differnetitated as cash,online.

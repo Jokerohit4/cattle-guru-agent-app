@@ -31,6 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: phonewhat ? PhoneWhatsapp() : Container(),
         )
       ],
+      elevation: 0.0,
     );
   }
 

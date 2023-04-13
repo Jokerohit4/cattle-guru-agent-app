@@ -10,6 +10,7 @@ import 'package:cattle_guru_agent_app/screens/Edit_bank_details.dart';
 import 'package:cattle_guru_agent_app/screens/My_profile_screen.dart';
 import 'package:cattle_guru_agent_app/screens/Orders/Orders_screen.dart';
 import 'package:cattle_guru_agent_app/screens/Orders/Place_order_screen.dart';
+import 'package:cattle_guru_agent_app/widgets/Custom_AppBar.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,35 +25,23 @@ class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.orange.shade50,
-        automaticallyImplyLeading: false,
-        leading: Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-        ),
-        title: Text(
-          "Select Language",
-          style: TextStyle(
-              color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
-        ),
-      ),
+      appBar: const CustomAppBar(title: "Menu Screen", phonewhat: false),
       body: ListView(
         children: [
           CstmListTile("My Profile", () {
-            Get.to(() => MyProfileScreen());
+            Get.to(() => const MyProfileScreen());
           }),
           CstmListTile("Transfer Earnings to Bank", () {
-            Get.to(() => WithdrawEarningsScreen());
+            Get.to(() => const WithdrawEarningsScreen());
           }),
           CstmListTile("My Earnings", () {
-            Get.to(() => MyEarningsScreen());
+            Get.to(() => const MyEarningsScreen());
           }),
           CstmListTile("Bank Details", () {
             Get.to(() => EditBankDetailsScreen());
           }),
           CstmListTile("Language", () {
-            Get.to(() => MyProfileScreen());
+            Get.to(() => const MyProfileScreen());
           }),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -68,7 +57,7 @@ class MenuScreen extends StatelessWidget {
             Get.to(() => PlaceOrderScreen());
           }),
           CstmListTile("Past Orders", () {
-            Get.to(() => OrderScreen());
+            Get.to(() => const OrderScreen());
           }),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -78,16 +67,16 @@ class MenuScreen extends StatelessWidget {
             ),
           ),
           CstmListTile("Add new Customer", () {
-            Get.to(() => AddCustomerScreen());
+            Get.to(() => const AddCustomerScreen());
           }),
           CstmListTile("Paying Customer", () {
-            Get.to(() => PayingCustomerScreen());
+            Get.to(() => const PayingCustomerScreen());
           }),
           CstmListTile("Potential Earnings", () {
-            Get.to(() => PotentialCustomerScreen());
+            Get.to(() => const PotentialCustomerScreen());
           }),
           CstmListTile("All Customer", () {
-            Get.to(() => AllCustomerScreen());
+            Get.to(() => const AllCustomerScreen());
           }),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -97,15 +86,15 @@ class MenuScreen extends StatelessWidget {
             ),
           ),
           CstmListTile("Terms & Conditions", () {
-            Get.to(() => MyProfileScreen());
+            Get.to(() => const MyProfileScreen());
           }),
           CstmListTile("Privacy Policy", () {
-            Get.to(() => MyProfileScreen());
+            Get.to(() => const MyProfileScreen());
           }),
           CstmListTile("Rate & Feeback", () {
-            Get.to(() => MyProfileScreen());
+            Get.to(() => const MyProfileScreen());
           }),
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
           CustomButton(
@@ -113,7 +102,7 @@ class MenuScreen extends StatelessWidget {
             inptwidth: 1.2,
             inpttxt: "Share",
             color: Colors.orange,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.normal),
@@ -121,7 +110,7 @@ class MenuScreen extends StatelessWidget {
               // Get.to(() => EnterDetailsScreen());
             },
           ),
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
           CustomButton(
@@ -129,13 +118,14 @@ class MenuScreen extends StatelessWidget {
             inptwidth: 1.2,
             inpttxt: "Logout",
             color: Colors.orange,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.normal),
             press: () async {
-              await FirebaseAuth.instance.signOut();
-              Get.to(() => PhoneScreen());
+              await FirebaseAuth.instance
+                  .signOut()
+                  .then((value) => Get.to(() => const PhoneScreen()));
             },
           ),
         ],
@@ -147,16 +137,16 @@ class MenuScreen extends StatelessWidget {
     return InkWell(
       onTap: press as Function()?,
       child: ListTile(
-        leading: Icon(
+        leading: const Icon(
           Icons.photo_outlined,
           color: Colors.orange,
         ),
         title: Text(
           inptxt,
-          style: TextStyle(
+          style: const TextStyle(
               color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
         ),
-        trailing: Icon(
+        trailing: const Icon(
           Icons.arrow_forward_ios,
           color: Colors.black,
           size: 16,

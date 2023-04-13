@@ -2,6 +2,7 @@ import 'package:cattle_guru_agent_app/widgets/Custom_Customer_details.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_button.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
 class PotentialCustomerScreen extends StatefulWidget {
   const PotentialCustomerScreen({super.key});
@@ -122,18 +123,18 @@ class _PotentialCustomerScreenState extends State<PotentialCustomerScreen> {
             ),
           ),
           CustomButton(
-                  inptheight: 20,
-                  inptwidth: 1.25,
-                  inpttxt: "Continue",
-                  color: Colors.orange,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal),
-                  press: () {
-                    // Get.to(() => EditBankDetailsScreen());
-                  },
-                ),
+            inptheight: 20,
+            inptwidth: 1.25,
+            inpttxt: "Continue",
+            color: Colors.orange,
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.normal),
+            press: () {
+              // Get.to(() => EditBankDetailsScreen());
+            },
+          ),
         ],
       ),
     );
@@ -162,6 +163,8 @@ class _PotentialCustomerScreenState extends State<PotentialCustomerScreen> {
                 Container(
                   height: 80,
                   width: 80,
+                  child: ProfilePicture(
+                      name: details[0], radius: 80, fontsize: 25),
                   decoration: const BoxDecoration(
                       shape: BoxShape.circle, color: Colors.blue),
                 ),

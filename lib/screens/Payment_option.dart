@@ -17,7 +17,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String orderid;
-  final String orderval;
+  final double orderval;
   final String name;
   final String totalbags;
   final String date;
@@ -27,7 +27,7 @@ class PaymentScreen extends StatefulWidget {
       {super.key,
       this.tabIndex = 0,
       this.orderid = "",
-      this.orderval = "",
+      this.orderval = 0,
       this.name = '',
       this.totalbags = "",
       this.date = "",
@@ -41,6 +41,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   final _razorpay = Razorpay();
 
   void initState() {
+    print(widget.date);
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSucess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
@@ -59,13 +60,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
           .collection("pendingorder")
           .doc(widget.orderid)
           .set(orderDetails.toJson())
+          .then((value) {
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection("cart")
+                .get()
+                .then((querySnapshot) {
+              for (DocumentSnapshot doc in querySnapshot.docs) {
+                doc.reference.delete();
+              }
+            }).catchError((error) => print("Failed to send details: $error"));
+          })
           .then((value) => Get.off(() => OrderSucessfulScreen(
                 bags: widget.totalbags,
                 date: widget.date,
                 earning: widget.myearning,
                 name: widget.name,
                 orderid: widget.orderid,
-                orderval: widget.orderval,
+                orderval: widget.orderval.toString(),
               )))
           .catchError((error) => print("Failed to send details: $error"));
     }
@@ -88,26 +101,37 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<dynamic> addUserInfo(OrdersModel orderDetails) {
-                  print("djflksd");
-                  return FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(FirebaseAuth.instance.currentUser?.uid)
-                      .collection("orders")
-                      .doc("pendingorders")
-                      .collection("pendingorder")
-                      .doc(widget.orderid)
-                      .set(orderDetails.toJson())
-                      .then((value) => Get.off(() => OrderSucessfulScreen(
-                            bags: widget.totalbags,
-                            date: widget.date,
-                            earning: widget.myearning,
-                            name: widget.name,
-                            orderid: widget.orderid,
-                            orderval: widget.orderval,
-                          )))
-                      .catchError(
-                          (error) => print("Failed to send details: $error"));
-                }
+    print("djflksd");
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("orders")
+        .doc("pendingorders")
+        .collection("pendingorder")
+        .doc(widget.orderid)
+        .set(orderDetails.toJson())
+        .then((value) {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection("cart")
+              .get()
+              .then((querySnapshot) {
+            for (DocumentSnapshot doc in querySnapshot.docs) {
+              doc.reference.delete();
+            }
+          }).catchError((error) => print("Failed to send details: $error"));
+        })
+        .then((value) => Get.off(() => OrderSucessfulScreen(
+              bags: widget.totalbags,
+              date: widget.date,
+              earning: widget.myearning,
+              name: widget.name,
+              orderid: widget.orderid,
+              orderval: widget.orderval.toString(),
+            )))
+        .catchError((error) => print("Failed to send details: $error"));
+  }
 
   void changeTabIndex(int index) {
     setState(() {
@@ -153,6 +177,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 const total = 1;
                 var name;
                 var phonenumber;
+                var ordervalu = widget.orderval;
                 FirebaseFirestore.instance
                     .collection("users")
                     .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -174,10 +199,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     print(name);
                   });
                 });
+                print(widget.orderval);
                 const description = "Payment for the order through online";
                 var options = {
                   'key': 'rzp_live_hUk8LTeESrQ6lL',
-                  'amount': total * 100,
+                  'amount': ordervalu * 100.0,
                   'name': name,
                   'description': description,
                   'prefill': {
@@ -209,19 +235,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
               press: () {
                 print("djflksd");
                 OrdersModel orderdetails = OrdersModel(
-                  totalbags: widget.totalbags,
-                  date: widget.date,
-                  myearning: widget.myearning,
-                  orderno: widget.orderid,
-                  orderval: widget.orderval,
-                  items: Items(
-                    totalBags: "",
-                    binola: "",
-                    cattleFeed: "",
-                    churi: "",
-                    khal: ""
-                  )
-                );
+                    totalbags: widget.totalbags,
+                    date: widget.date,
+                    myearning: widget.myearning,
+                    orderno: widget.orderid,
+                    orderval: widget.orderval.toString(),
+                    items: Items(
+                        totalBags: "",
+                        binola: "",
+                        cattleFeed: "",
+                        churi: "",
+                        khal: ""));
                 addUserInfo(orderdetails);
               },
             ),

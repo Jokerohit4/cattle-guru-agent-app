@@ -1,17 +1,58 @@
+import 'package:cattle_guru_agent_app/models/Customer_details_model.dart';
+import 'package:cattle_guru_agent_app/screens/Orders/Place_order_screen.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_Customer_details.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_button.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_input_field.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:get/get.dart';
 
 class AllCustomerScreen extends StatefulWidget {
-  const AllCustomerScreen({super.key});
+  final String image;
+  final String quantity;
+  final String price;
+  final String description;
+  final String disprice;
+  final String wt;
+  final String name;
+  const AllCustomerScreen(
+      {super.key,
+      this.image = "",
+      this.quantity = "",
+      this.price = "",
+      this.description = "",
+      this.disprice = "",
+      this.wt = "",
+      this.name = ""});
 
   @override
-  State<AllCustomerScreen> createState() =>
-      _AllCustomerScreenState();
+  State<AllCustomerScreen> createState() => _AllCustomerScreenState();
 }
 
 class _AllCustomerScreenState extends State<AllCustomerScreen> {
+  Future<List<CustomerDetails>> readCartData1() async {
+    List<CustomerDetails> productList = [];
+    print("dsiofjdkl");
+    print(FirebaseAuth.instance.currentUser!.uid);
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("customerdetails")
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((product) {
+        var _product = product.data();
+        print(_product);
+        productList.add(CustomerDetails.fromJson(_product));
+      });
+    });
+    print("pdhfdlkfdsjf");
+    print(productList[0]);
+    return productList;
+  }
+
   TextEditingController searchcontroller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -87,53 +128,40 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
               ],
             ),
           ),
-          Expanded(
-            child: ListView(
-              children: [
-                DetailsCard(
-                  context,
-                  ["Gaurav Panwar", "8149645538", "Begampur Khatola.."],
-                ),
-                DetailsCard(
-                  context,
-                  ["Akash Headov", "8149645538", "Begampur "],
-                ),
-                DetailsCard(
-                  context,
-                  ["OnKar W", "8249525540", "Haryana"],
-                ),
-                DetailsCard(
-                  context,
-                  ["Prandeep G", "8149645538", "Khatola"],
-                ),
-                DetailsCard(
-                  context,
-                  ["Prandeep G", "8149645538", "Khatola"],
-                ),
-                DetailsCard(
-                  context,
-                  ["Prandeep G", "8149645538", "Khatola"],
-                ),
-                DetailsCard(
-                  context,
-                  ["Prandeep G", "8149645538", "Khatola"],
-                ),
-              ],
-            ),
-          ),
+          FutureBuilder<List<CustomerDetails>>(
+              future: readCartData1(),
+              builder: (context, snapshot) {
+                print(snapshot.data);
+                if (snapshot.hasData) {
+                  List<CustomerDetails> productList = snapshot.data ?? [];
+                  print(productList);
+                  return Expanded(
+                      child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: productList.length,
+                    itemBuilder: ((context, index) {
+                      return DetailsCard(context, [
+                        productList[index].name,
+                        productList[index].phonenum,
+                        productList[index].district
+                      ]);
+                    }),
+                  ));
+                } else {
+                  return CircularProgressIndicator();
+                }
+              }),
           CustomButton(
-                  inptheight: 20,
-                  inptwidth: 1.25,
-                  inpttxt: "Continue",
-                  color: Colors.orange,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal),
-                  press: () {
-                    // Get.to(() => EditBankDetailsScreen());
-                  },
-                ),
+            inptheight: 20,
+            inptwidth: 1.25,
+            inpttxt: "Continue",
+            color: Colors.orange,
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.normal),
+            press: () {},
+          ),
         ],
       ),
     );
@@ -162,8 +190,10 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
                 Container(
                   height: 80,
                   width: 80,
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.blue),
+                  child: ProfilePicture(
+                      name: details[0], radius: 80, fontsize: 25),
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: Colors.blue),
                 ),
                 SizedBox(
                   height: screenHeight / 20,
@@ -199,7 +229,9 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
                       fontSize: 14,
                       fontWeight: FontWeight.normal),
                   press: () {
-                    // Get.to(() => EditBankDetailsScreen());
+                    Get.to(() => PlaceOrderScreen(
+                          customername: details[0],
+                        ));
                   },
                 ),
               ],

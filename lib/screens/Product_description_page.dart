@@ -1,12 +1,11 @@
 import 'package:cattle_guru_agent_app/models/Cart_model.dart';
 import 'package:cattle_guru_agent_app/screens/Customer/Add_customer_screen.dart';
-import 'package:cattle_guru_agent_app/screens/Menu_screen.dart';
+import 'package:cattle_guru_agent_app/screens/Customer/All_customer_screen.dart';
 import 'package:cattle_guru_agent_app/screens/Orders/Place_order_screen.dart';
 import 'package:cattle_guru_agent_app/utils/Colors.dart';
 import 'package:cattle_guru_agent_app/utils/Size_config.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_AppBar.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_button.dart';
-import 'package:cattle_guru_agent_app/widgets/Phone_whatsapp.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,18 +22,19 @@ class ProductDescriptionScreen extends StatefulWidget {
   final String image2;
   final String image3;
   final String image4;
-  const ProductDescriptionScreen(
-      {super.key,
-      required this.title,
-      required this.costperkg,
-      required this.weight,
-      required this.description,
-      required this.totalamt,
-      required this.earnings,
-      required this.image1,
-      required this.image2,
-      required this.image3,
-      required this.image4});
+  const ProductDescriptionScreen({
+    super.key,
+    required this.title,
+    required this.costperkg,
+    required this.weight,
+    required this.description,
+    required this.totalamt,
+    required this.earnings,
+    required this.image1,
+    required this.image2,
+    required this.image3,
+    required this.image4,
+  });
 
   @override
   State<ProductDescriptionScreen> createState() =>
@@ -84,7 +84,12 @@ class _ProductDescriptionScreenState extends State<ProductDescriptionScreen> {
       appBar: CustomAppBar(title: widget.title, phonewhat: true),
       body: ListView(
         children: [
-          imagecontainer([widget.image1,widget.image2,widget.image3,widget.image4], context),
+          imagecontainer([
+            widget.image1,
+            widget.image2,
+            widget.image3,
+            widget.image4,
+          ], context),
           Padding(
             padding:
                 EdgeInsets.all(SizeConfig(context).getProportionatePadding(10)),
@@ -243,16 +248,22 @@ class _ProductDescriptionScreenState extends State<ProductDescriptionScreen> {
               //   );
               //   placeorder(cartModel);
               //   Get.to(() => PlaceOrderScreen());
-              Get.to(() => AddCustomerScreen(
-                    image:
-                        widget.image1,
-                    quantity: "1",
-                    price: widget.totalamt,
-                    description: widget.description,
-                    disprice: widget.totalamt,
-                    wt: widget.weight,
-                    name: widget.title,
-                  ));
+              if (_itemCount == 0) {
+                Get.to(() => AddCustomerScreen(
+                      image: widget.image1,
+                      quantity: _itemCount.toString(),
+                      price: widget.totalamt,
+                      description: widget.description,
+                      disprice: widget.totalamt,
+                      wt: widget.weight,
+                      name: widget.title,
+                    ));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Customer added SucessFully'),
+                  duration: Duration(seconds: 3),
+                ));
+              }
             },
           ),
           SizedBox(
@@ -263,12 +274,20 @@ class _ProductDescriptionScreenState extends State<ProductDescriptionScreen> {
             inptwidth: 1.2,
             inpttxt: "For Existing Customer",
             color: Colors.orange,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.normal),
             press: () async {
-              Get.to(() => PlaceOrderScreen(customername: "ABCD"));
+              Get.to(() => AllCustomerScreen(
+                    image: widget.image1,
+                    quantity: _itemCount.toString(),
+                    price: widget.totalamt,
+                    description: widget.description,
+                    disprice: widget.totalamt,
+                    wt: widget.weight,
+                    name: widget.title,
+                  ));
             },
           ),
         ],

@@ -7,8 +7,7 @@ import 'package:cattle_guru_agent_app/widgets/Custom_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:get/get.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -64,6 +63,23 @@ class _OrderScreenState extends State<OrderScreen>
     });
     print(productList);
     return productList;
+  }
+
+  deletedata(String orderno) async {
+    print("sdjkfhldskfhd");
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("orders")
+        .doc("pendingorders")
+        .collection("pendingorder")
+        .where("orderno", isEqualTo: orderno)
+        .get()
+        .then((querySnapshot) {
+      for (DocumentSnapshot doc in querySnapshot.docs) {
+        doc.reference.delete();
+      }
+    }).then((value) => Get.to(() => OrderDetailsScreen()));
   }
 
   @override
@@ -159,7 +175,7 @@ class _OrderScreenState extends State<OrderScreen>
                     productList[index].orderval.toString(),
                     productList[index].myearning.toString(),
                     productList[index].orderno.toString(),
-                  productList[index].date.toString());
+                    productList[index].date.toString());
               }),
             );
           } else {
@@ -255,6 +271,7 @@ class _OrderScreenState extends State<OrderScreen>
                           fontSize: 18,
                           fontWeight: FontWeight.normal),
                       press: () {
+                        deletedata(orderid);
                         // Get.to(() => SelectAppLangScreen());
                       },
                     ),

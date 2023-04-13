@@ -70,7 +70,26 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     TextEditingController refralcontroller = TextEditingController();
     return Scaffold(
-      appBar: CustomAppBar(title: "Guru PashuMitra", phonewhat: true),
+      appBar: AppBar(
+        backgroundColor: Colors.orange.shade50,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            Get.to(() => const MenuScreen());
+          },
+          icon: const Icon(
+            Icons.menu,
+            color: Colors.black,
+          ),
+        ),
+        elevation: 0,
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 10.0),
+            child: PhoneWhatsapp(),
+          )
+        ],
+      ),
       body: ListView(children: [
         Padding(
           padding: const EdgeInsets.all(8.0),

@@ -1,6 +1,7 @@
 import 'package:cattle_guru_agent_app/widgets/Custom_button.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_input_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 
 class PayingCustomerScreen extends StatefulWidget {
   const PayingCustomerScreen({super.key});
@@ -161,6 +162,8 @@ class _PayingCustomerScreenState extends State<PayingCustomerScreen> {
                 Container(
                   height: 80,
                   width: 80,
+                   child: ProfilePicture(
+                      name: details[0], radius: 80, fontsize: 25),
                   decoration: const BoxDecoration(
                       shape: BoxShape.circle, color: Colors.blue),
                 ),

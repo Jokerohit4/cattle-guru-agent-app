@@ -1,8 +1,12 @@
+import 'package:cattle_guru_agent_app/screens/Home_screen.dart';
 import 'package:cattle_guru_agent_app/utils/Size_config.dart';
+import 'package:cattle_guru_agent_app/widgets/Custom_AppBar.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_button.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_status_tracker.dart';
 import 'package:cattle_guru_agent_app/widgets/Order_tracker_widget.dart';
 import 'package:cattle_guru_agent_app/widgets/Phone_whatsapp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_tracker/order_tracker.dart';
@@ -14,7 +18,14 @@ class TrackOrderScreen extends StatefulWidget {
   final String earning;
   final String orderid;
   final String date;
-  const TrackOrderScreen({super.key, this.name = "",  this.bags = "",  this.orderval = "",  this.earning = "",  this.orderid = "",  this.date = ""});
+  const TrackOrderScreen(
+      {super.key,
+      this.name = "",
+      this.bags = "",
+      this.orderval = "",
+      this.earning = "",
+      this.orderid = "",
+      this.date = ""});
 
   @override
   State<TrackOrderScreen> createState() => _TrackOrderScreenState();
@@ -44,47 +55,29 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
     },
   ];
 
-  List<TextDto> orderList = [
-    TextDto("Order Confirmed", "Fri, 25th Mar '22 - 10:47pm"),
-    TextDto("Seller ha processed your order", "Sun, 27th Mar '22 - 10:19am"),
-    TextDto("Your item has been picked up by courier partner.",
-        "Tue, 29th Mar '22 - 5:00pm"),
-  ];
-
-  List<TextDto> shippedList = [
-    TextDto("Your order has been shipped", "Tue, 29th Mar '22 - 5:04pm"),
-    TextDto("Your item has been received in the nearest hub to you.", null),
-  ];
-
-  List<TextDto> outOfDeliveryList = [
-    TextDto("Your order is out for delivery", "Thu, 31th Mar '22 - 2:27pm"),
-  ];
-
-  List<TextDto> deliveredList = [
-    TextDto("Your order has been delivered", "Thu, 31th Mar '22 - 3:58pm"),
-  ];
+  deletedata(String orderno) async {
+    print("sdjkfhldskfhd");
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("orders")
+        .doc("pendingorders")
+        .collection("pendingorder")
+        .where("orderno", isEqualTo: orderno)
+        .get()
+        .then((querySnapshot) {
+      for (DocumentSnapshot doc in querySnapshot.docs) {
+        doc.reference.delete();
+      }
+    }).then((value) => Get.off(() => HomeScreen()));
+  }
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-          backgroundColor: Colors.orange.shade50,
-          leading: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-          title: Text(
-            "Track Order Screen",
-            style: TextStyle(
-                color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
-          ),
-          actions: [
-            PhoneWhatsapp()
-          ],
-      ),
+      appBar: CustomAppBar(title: 'Track Order Screen', phonewhat: true,),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -129,18 +122,19 @@ class _TrackOrderScreenState extends State<TrackOrderScreen> {
             ),
             orderdetails(mylist),
             CustomButton(
-                      inptheight: 16,
-                      inptwidth: 1.15,
-                      inpttxt: "Cancel Order",
-                      color: Colors.orange,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal),
-                      press: () {
-                        // Get.to(() => EditBankDetailsScreen());
-                      },
-                    ),
+              inptheight: 16,
+              inptwidth: 1.15,
+              inpttxt: "Cancel Order",
+              color: Colors.orange,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal),
+              press: () {
+                deletedata(widget.orderid);
+                // Get.to(() => EditBankDetailsScreen());
+              },
+            ),
           ],
         ),
       ),

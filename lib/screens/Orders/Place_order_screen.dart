@@ -22,12 +22,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class PlaceOrderScreen extends StatefulWidget {
   late int tabIndex;
-  final String customername;
+   String customername;
   PlaceOrderScreen({super.key, this.tabIndex = 1, this.customername = ""});
 
   @override
@@ -40,6 +41,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
   ];
   String? selectedValue = "";
   double sumearnings = 0.0;
+  double totalorderval = 0.0;
   Future<List<Product>> getStarted_readData() async {
     List<Product> productList = [];
     // print("sdjkfhldskfhd");
@@ -53,6 +55,11 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
         productList.add(Product.fromJson(_product));
         print(productList);
       });
+    });
+    productList.forEach((element) {
+      sumbags += int.parse(element.totalwt.toString());
+      sumearnings += double.parse(element.earning.toString());
+      totalorderval += double.parse(element.totalamt.toString());
     });
     // print(productList);
     return productList;
@@ -73,17 +80,9 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
         var _product = product.data();
         print(_product);
         productList.add(Crtprod.fromJson(_product));
-        // print(productList[0].crtprod?.length);
-        // sumbags =
-        //     sumbags + int.parse(productList[0].crtprod?[p].quantity ?? "");
-        // sum = sum + int.parse(productList[0].crtprod?[p].disprice ?? "");
-        // p++;
-        print("lkdsjfdlkfjsd");
-        // print(productList[0].crtprod?[0].image);
       });
     });
-    print("pdhfdlkfdsjf");
-    // print(productList[0].crtprod?[0].image);
+
     return productList;
   }
 
@@ -136,7 +135,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
       }
       lastRandChars[i]++;
     }
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 8; i++) {
       uniqueId += pushChars[lastRandChars[i]];
     }
     return uniqueId;
@@ -247,7 +246,8 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                       fontSize: 14,
                       fontWeight: FontWeight.normal),
                   press: () {
-                    Get.to(() => PaymentScreen());
+                    print(widget.customername);
+                    Navigator.pop(context);
                   },
                 ),
               ),
@@ -267,7 +267,9 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
       padding: EdgeInsets.symmetric(
           vertical: screenHeight / 150, horizontal: screenWidth / 60),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          widget.customername = details[0];
+        },
         child: Container(
           decoration: BoxDecoration(
             color: Color.fromRGBO(214, 200, 200, 0.25),
@@ -283,6 +285,8 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
             leading: Container(
               height: SizeConfig(context).getProportionateScreenHeight(60),
               width: SizeConfig(context).getProportionateScreenWidth(60),
+               child: ProfilePicture(
+                      name: details[0], radius: 60, fontsize: 22),
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Colors.blue),
             ),
@@ -295,7 +299,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
               ],
             ),
             trailing: Checkbox(
-              checkColor: kPrimaryColor,
+              activeColor: kPrimaryColor,
               value: this.secondvalue,
               onChanged: (bool? value) {
                 setState(() {
@@ -354,7 +358,6 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
           print(snapshot.data);
           if (snapshot.hasData) {
             List<Crtprod> productList = snapshot.data ?? [];
-            // print(productList[0].image);
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.orange.shade50,
@@ -686,12 +689,12 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                                 fontWeight: FontWeight.normal),
                             press: () {
                               Get.to(() => PaymentScreen(
-                                    orderval: sum.toString(),
+                                    orderval: totalorderval,
                                     myearning: sumearnings.toString(),
                                     totalbags: sumbags.toString(),
                                     orderid: getCustomUniqueId(),
-                                    name: "Gaurav Panwar",
-                                    date: DateFormat("dd/mm/yyyy")
+                                    name: widget.customername,
+                                    date: DateFormat("d/M/y")
                                         .format(DateTime.now())
                                         .toString(),
                                   ));
@@ -844,20 +847,19 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                             itemCount: productList.length,
                             itemBuilder: ((context, index) {
                               return productitem(
-                                context,
-                                productList[index].image1,
-                                productList[index].fullname,
-                                selected[index],
-                                productList[index].totalwt,
-                                productList[index].costperkg,
-                                productList[index].description,
-                                productList[index].totalamt,
-                                productList[index].totalamt,
-                                productList[index].image1,
-                                productList[index].image2,
-                                productList[index].image3,
-                                productList[index].image4
-                              );
+                                  context,
+                                  productList[index].image1,
+                                  productList[index].fullname,
+                                  selected[index],
+                                  productList[index].totalwt,
+                                  productList[index].costperkg,
+                                  productList[index].description,
+                                  productList[index].totalamt,
+                                  productList[index].totalamt,
+                                  productList[index].image1,
+                                  productList[index].image2,
+                                  productList[index].image3,
+                                  productList[index].image4);
                             }),
                           ),
                         ),
@@ -891,10 +893,10 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
       onHover: (value) {},
       onTap: () {
         Get.to(() => ProductDescriptionScreen(
-          image1: image1,
-          image2: image2,
-          image3: image3,
-          image4: image4,
+              image1: image1,
+              image2: image2,
+              image3: image3,
+              image4: image4,
               title: text,
               costperkg: costperkg,
               description: description,

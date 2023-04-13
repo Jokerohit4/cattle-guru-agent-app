@@ -1,9 +1,7 @@
-import 'package:cattle_guru_agent_app/screens/Edit_bank_details.dart';
+import 'package:cattle_guru_agent_app/screens/Navigation_screen.dart';
 import 'package:cattle_guru_agent_app/utils/Strings.dart';
 import 'package:cattle_guru_agent_app/widgets/Custom_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 
 class SelectAppLangScreen extends StatelessWidget {
@@ -25,7 +23,7 @@ class SelectAppLangScreen extends StatelessWidget {
                   applogo,
                 ),
               ),
-          Center(
+          const Center(
             child: Text(
               "Guru PashuMitra",
               style: TextStyle(
@@ -38,7 +36,7 @@ class SelectAppLangScreen extends StatelessWidget {
           ),
            Column(
             children: [
-          Text(
+          const Text(
             "Please Select app language",
             style: TextStyle(
                 color: Colors.grey, fontSize: 23, fontWeight: FontWeight.w500),
@@ -51,12 +49,12 @@ class SelectAppLangScreen extends StatelessWidget {
                 inptwidth: 1.2,
                 inpttxt: "Hindi",
                 color: Colors.orange.shade50,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black,
                     fontSize: 20,
                     fontWeight: FontWeight.normal),
                 press: () {
-                  Get.to(() => SelectAppLangScreen());
+                  Get.to(() => const SelectAppLangScreen());
                 },
               ),
           SizedBox(
@@ -67,12 +65,12 @@ class SelectAppLangScreen extends StatelessWidget {
             inptwidth: 1.2,
             inpttxt: "English",
             color: Colors.orange,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.black,
                 fontSize: 20,
                 fontWeight: FontWeight.normal),
             press: () {
-              Get.to(() => SelectAppLangScreen());
+              Get.to(() => const SelectAppLangScreen());
             },
           ),
           ],
@@ -82,12 +80,12 @@ class SelectAppLangScreen extends StatelessWidget {
             inptwidth: 1.2,
             inpttxt: "Continue",
             color: Colors.orange,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.normal),
             press: () {
-              Get.to(() => EditBankDetailsScreen());
+              Get.off(() => NavigationScreen(tabIndex: 0));
             },
           ),
         ],
